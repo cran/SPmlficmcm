@@ -1,0 +1,5 @@
+export(Est.Inpar, FtSmlrmCMCM, SeltcEch, Spmlficmcm)
+importFrom(numDeriv,grad)
+importFrom(numDeriv,hessian)
+importFrom(nleqslv,nleqslv)
+importFrom(boot,inv.logit)
