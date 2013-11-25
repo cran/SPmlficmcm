@@ -1,9 +1,9 @@
 Spmlficmcm <-
-function(fl,N,gmname,gcname,DatfE,typ,vcInp){ 
+function(fl,N,gmname,gcname,DatfE,typ,start){ 
                   # ============================================================ 
                   # Etape 1 estimation des valeurs initiales 
                   # Valeurs initiales des parametre du modele 
-                  # bateerie des testes 
+                  # baterie des tests
                     genom<-DatfE[gmname];genom1<-genom[is.na(genom)!=TRUE]
                     genoen<-DatfE[gcname];genoen1<-genoen[is.na(genoen)!=TRUE]
                     nagm<-genom[is.na(genom)==TRUE]
@@ -15,25 +15,25 @@ function(fl,N,gmname,gcname,DatfE,typ,vcInp){
                     tegk<-teg1+teg2
                     # conditions
                     if(length(nagm)>0){print(gmname)
-                                      stop("missing value in mother genotype")} 
+                                      stop("missing mother genotype value")} 
                     if(min(genom1)<0){print(gmname)
                                  stop("mother's genotype is negative")}
                     if(max(genom1)>2){print(gmname)
-                                 stop("mother's genotype is upper 2")}
+                                 stop("mother's genotype is greater than 2")}
                     if(min(genoen1)<0){print(gmname)
                                  stop("child's genotype is negative")}
                     if(max(genoen1)>2){print(gmname)
-                                 stop("child's genotype is upper 2")} 
+                                 stop("child's genotype is greater than 2")} 
                     if(max(tegk)>0){print(gmname)
-                               stop("mother and child genotype is not compatible")
+                               stop("mother and child genotypes are not compatible")
                                }else{
                                if(typ==1){
                                vIn<-Est.Inpar(fl,N,gmname,gcname,DatfE,1)
                                }else{
                                vIn<-Est.Inpar(fl,N,gmname,gcname,DatfE,2)
                                 }   
-                    if(missing(vcInp)){parms<-vIn$parms
-                                             }else{parms<-vcInp}
+                    if(missing(start)){parms<-vIn$parms
+                                             }else{parms<-start}
                     beta.start=parms[1:length(parms)-1];
                     theta.start=parms[length(parms)]
                   # Valeurs initiales du systeme d quation non linaire
@@ -70,7 +70,8 @@ function(fl,N,gmname,gcname,DatfE,typ,vcInp){
                   nac<-c("Estimate","Std.Error")
                   colnames(mats)<-nac
                   rownames(mats)<-nma
-                  rr<-list(Uim=vecma.u,MatR=mats,Matv=matv)
+                  loglik<-ftlh(mats[,"Estimate"])
+                  rr<-list(Uim=vecma.u,MatR=mats,Matv=matv,Lhft=ftlh,Value_loglikh=loglik)
                   return(rr)
                   }
                   }

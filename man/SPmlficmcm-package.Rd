@@ -12,7 +12,7 @@ Implementation of a method of general semiparametric maximum likelihood estimati
 \tabular{ll}{
 Package: \tab SPmlficmcm\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
+Version: \tab 1.1\cr
 Date: \tab 2013-10-07\cr
 License: \tab GPL-2\cr
 }

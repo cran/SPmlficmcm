@@ -42,7 +42,7 @@ set.seed(13200)
    beta=c(-0.916,0.857,0.405,-0.693,0.573)
    interc=-2.23
    Dataf<-FtSmlrmCMCM(fl1,M,theta,beta,interc,vpo,vprob,vcorr)        
-   # Number of eligible subjects in population study
+   # Number of subjects eligible to the study in the population
    N0=dim(Dataf[Dataf["outc"]==0,])[1];
    N1=dim(Dataf[Dataf["outc"]==1,])[1]
    N=c(N0,N1)          

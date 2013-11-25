@@ -46,8 +46,11 @@ function(fl,data1,N,gmname,gcname,vecma.u,HW=TRUE)
                         Nijmc<-fpol1(datMod,c("outc",varz,gmname,gcname),"vdcop","nijmc")
                         
                         # construction N++m+
-                        n0<-c(sum(Nijmc[Nijmc[gmname]==0,]["nijmc"]),sum(Nijmc[Nijmc[gmname]==1,]["nijmc"]),sum(Nijmc[Nijmc[gmname]==2,]["nijmc"])) 
                         
+                        #if(dim(Nijmc[Nijmc[gmname]==0,]["nijmc"])[1]==0){a1<-0}else{a1<-sum(Nijmc[Nijmc[gmname]==0,]["nijmc"])}
+                        #if(dim(Nijmc[Nijmc[gmname]==1,]["nijmc"])[1]==0){a2<-0}else{a2<-sum(Nijmc[Nijmc[gmname]==1,]["nijmc"])}
+                        #if(dim(Nijmc[Nijmc[gmname]==2,]["nijmc"])[1]==0){a3<-0}else{a3<-sum(Nijmc[Nijmc[gmname]==2,]["nijmc"])} 
+                        #n0<-c(a1,a2,a3) 
                         #construction de Cjm 
                         mat.cjm<-fpol1(datMod,c(varz,gmname),"vdcop","Cjm")
                           

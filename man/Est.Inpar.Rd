@@ -20,7 +20,7 @@ Est.Inpar(fl, N, gnma, gnch, tab1, typ)
 }
   \item{tab1}{\code{data.frame} of the database.
 }
-  \item{typ}{Argument that specifies if the data are complete (1) or there are missing offspring genotypes (2). 
+  \item{typ}{Argument that specifies whether the data are complete (1) or there are missing offspring genotypes (2). 
 }
 }
 \details{

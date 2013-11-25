@@ -56,7 +56,7 @@ function(fl,data1,N,gmname,gcname,vecma.u,HW=TRUE)
                       noutc=as.character(terms.formula(fl)[[2]])
                     # selon les cas il nous donne la fonction indique a utilise pour le genotype de la mere
                       #indfg<-IndF3(gm)
-                      pp<-length(vecma.u)/2;ppd<-2*pp;uu<-pp+1
+                      ppd<-length(vecma.u);pp<-ppd/2;uu<-pp+1
                       ma.u<-rbind(vecma.u[1:pp],vecma.u[uu:ppd])
                       
                     # 2-Construction du systeme non lineaire =======================================
@@ -78,7 +78,7 @@ function(fl,data1,N,gmname,gcname,vecma.u,HW=TRUE)
                         Nijmc<-fpol1(datMod,c("outc",varz,gmname,gcname),"vdcop","nijmc") 
                           
                         # construction N++m+
-                        n0<-c(sum(Nijmc[Nijmc[gmname]==0,]["nijmc"]),sum(Nijmc[Nijmc[gmname]==1,]["nijmc"]),sum(Nijmc[Nijmc[gmname]==2,]["nijmc"])) 
+                        #n0<-c(sum(Nijmc[Nijmc[gmname]==0,]["nijmc"]),sum(Nijmc[Nijmc[gmname]==1,]["nijmc"]),sum(Nijmc[Nijmc[gmname]==2,]["nijmc"])) 
                         
                         #construction de Cjm 
                         mat.cjm<-fpol1(Nijmc,c(varz,gmname),"nijmc","Cjm")

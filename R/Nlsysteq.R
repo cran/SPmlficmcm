@@ -21,7 +21,7 @@ function(fl,data1,N,gmname,gcname,beta.start=NULL,theta.start=NULL,HW=TRUE)
                     # conditions
                     if(length(nagm)>0){
                                  print(gmname)
-                                 stop("missing value in mother genotype")
+                                 stop("missing mother genotype value")
                                  } 
                     if(min(genom1)<0){
                                  print(gmname)
@@ -29,7 +29,7 @@ function(fl,data1,N,gmname,gcname,beta.start=NULL,theta.start=NULL,HW=TRUE)
                                  }
                     if(max(genom1)>2){
                                  print(gmname)
-                                 stop("mother's genotype is upper 2")
+                                 stop("mother's genotype is greater than 2")
                                  }
                     if(min(genoen1)<0){
                                  print(gcname)
@@ -37,11 +37,11 @@ function(fl,data1,N,gmname,gcname,beta.start=NULL,theta.start=NULL,HW=TRUE)
                                  }
                     if(max(genoen1)>2){
                                  print(gcname)
-                                 stop("genoen1's genotype is upper 2")
+                                 stop("genoen1's genotype is greater than 2")
                                  } 
                     if(max(tegk)>0){
                                  print(gcname)
-                                 stop("mother and child genotype is not compatible")
+                                 stop("mother and child genotypes are not compatible")
                                  }else{
                                  
                     # creation de deux table une avec tous les donnees complet de c et l autre avec les seules c observables

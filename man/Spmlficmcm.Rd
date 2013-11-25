@@ -7,7 +7,7 @@ Semiparametric maximum likelihood for interaction in case-mother control-mother
 The function builds the nonlinear system from the data, solves the system and assesses the effect of each factor of the model, computes the variance - covariance matrix and deduces from it the standard deviations of each factor.
 }
 \usage{
-Spmlficmcm(fl, N, gmname, gcname, DatfE, typ, vcInp)
+Spmlficmcm(fl, N, gmname, gcname, DatfE, typ, start)
 }
 \arguments{
   \item{fl}{Model formula.
@@ -20,20 +20,22 @@ Spmlficmcm(fl, N, gmname, gcname, DatfE, typ, vcInp)
 }
 \item{DatfE}{\code{data.frame} in long format containing the following variables:\emph{outcome} variable, \emph{mother genotype}, \emph{offspring genotype} and \emph{environmental factors}.
 }
-\item{typ}{Argument indicating if the data are complete (1) or contain missing offspring genotypes (2).
+\item{typ}{Argument indicating whether the data are complete (1) or contain missing offspring genotypes (2).
 }
-\item{vcInp}{Vector of the initial values of the model parameters.
+\item{start}{Vector of the initial values of the model parameters.
 }
 }
 \details{
-The function \code{Spmlficmcm} builds the nonlinear system from the data and solves the nonlinear system. Then, it uses the log profile likelihood function and the one-step method to estimate the parameters of each factor of the model formula and their standard errors. The Hessian and gradient of the profile likelihood are computed numerically.  The genotype is coded as the number of minor alleles. The model supposes that the distribution of maternal genotype and offspring genotype satisfy the following assumptions: \emph{random mating}, \emph{Hardy-Weinberg equilibrium} and \emph{Mendelian inheritance}. When the data contains missing offspring genotypes, the profile likelihood is summed over the possible genotypes of each child whose genotype is missing. The argument \code{typ} allows the user to specify whether the data is complete or not. Argument \code{vcInp} permits to the user to give the initials values of model parameter. 
-Ex: in the following equation log(P/(1-P))=B0+B1*X1+B2*X2+Bm*Gm+Bc*Gc+B2m*X2:Gm, \code{vcIn}=(B0, B1, B2, Bm, Bc, B2m, fp) where fp is the log of the odds of the minor allelic frequency. However, if the user provides no values, the function uses logistic regression to compute the initial B=(B0, B1, B2, Bm, Bc, B2m) and takes 0.1 as the initial value of fp.
+The function \code{Spmlficmcm} builds the nonlinear system from the data and solves the nonlinear system. Then, it uses the log profile likelihood function and the one-step method to estimate the parameters of each factor of the model formula and their standard errors. The Hessian and gradient of the profile likelihood are computed numerically.  The genotype is coded as the number of minor alleles. The model supposes that the distribution of maternal genotype and offspring genotype satisfy the following assumptions: \emph{random mating}, \emph{Hardy-Weinberg equilibrium} and \emph{Mendelian inheritance}. When the data contains missing offspring genotypes, the profile likelihood is summed over the possible genotypes of each child whose genotype is missing. The argument \code{typ} allows the user to specify whether the data is complete or not. Argument \code{start} permits to the user to give the initials values of model parameter. 
+Ex: in the following equation log(P/(1-P))=B0+B1*X1+B2*X2+Bm*Gm+Bc*Gc+B2m*X2:Gm, \code{start}=(B0, B1, B2, Bm, Bc, B2m, fp) where fp is the log of the odds of the minor allelic frequency. However, if the user provides no values, the function uses logistic regression to compute the initial B=(B0, B1, B2, Bm, Bc, B2m) and takes 0.1 as the initial value of fp.
 }
 \value{
  A list containing components
 \item{\code{Uim}}{Nonlinear system solution}
 \item{\code{MatR}}{Matrix containing the estimates and their standard errors}
 \item{\code{Matv}}{Variance - covariance matrix}
+\item{\code{Lhft}}{Log-likelihood function. It takes as argument a vector of the model parameters}
+\item{\code{Value_loglikh}}{Value of the Log-likelihood function computed at the parameters estimated}
 }
 \references{
 Jinbo Chen, Dongyu Lin and Hagit Hochner (2012) Semiparametric Maximum Likelihood Methods for Analyzing Genetic and Environmental Effects with Case-Control Mother-Child Pair Data. \emph{Biometrics} DOI: 10.1111/j.1541-0420.2011.01728.
@@ -89,9 +91,9 @@ fl=outc~X1+X2+gm+gnch+X1:gnch+X2:gm;
         Rsnm<-Spmlficmcm(fl,N,"gm","gnch",DatfEcd,1)
         #solution of the nonlinear system
         round(Rsnm$Uim,digits=3)
-        #estimators
+        #estimates
         round(Rsnm$MatR,digits=3)
-        #variance covariance matrix
+        #variance - covariance matrix
         round(Rsnm$Matv,digits=5)
 ## Estimation of the parameters (with missing data)
         Rswm<-Spmlficmcm(fl,N,"gm","gnch",DatfEmd,typ=2)
@@ -99,7 +101,7 @@ fl=outc~X1+X2+gm+gnch+X1:gnch+X2:gm;
         round(Rswm$Uim,digits=3)
         #estimates
         round(Rswm$MatR,digits=3)
-        #variance covariance matrix
+        #variance - covariance matrix
         round(Rswm$Matv,digits=5)
 }
 }
