@@ -7,7 +7,7 @@ Semiparametric maximum likelihood for interaction in case-mother control-mother
 The function builds the nonlinear system from the data, solves the system and assesses the effect of each factor of the model, computes the variance - covariance matrix and deduces from it the standard deviations of each factor.
 }
 \usage{
-Spmlficmcm(fl, N, gmname, gcname, DatfE, typ, start)
+Spmlficmcm(fl, N, gmname, gcname, DatfE, typ, start, p=NULL)
 }
 \arguments{
   \item{fl}{Model formula.
@@ -24,10 +24,12 @@ Spmlficmcm(fl, N, gmname, gcname, DatfE, typ, start)
 }
 \item{start}{Vector of the initial values of the model parameters.
 }
+\item{p}{Disease prevalence 
+}
 }
 \details{
-The function \code{Spmlficmcm} builds the nonlinear system from the data and solves the nonlinear system. Then, it uses the log profile likelihood function and the one-step method to estimate the parameters of each factor of the model formula and their standard errors. The Hessian and gradient of the profile likelihood are computed numerically.  The genotype is coded as the number of minor alleles. The model supposes that the distribution of maternal genotype and offspring genotype satisfy the following assumptions: \emph{random mating}, \emph{Hardy-Weinberg equilibrium} and \emph{Mendelian inheritance}. When the data contains missing offspring genotypes, the profile likelihood is summed over the possible genotypes of each child whose genotype is missing. The argument \code{typ} allows the user to specify whether the data is complete or not. Argument \code{start} permits to the user to give the initials values of model parameter. 
-Ex: in the following equation log(P/(1-P))=B0+B1*X1+B2*X2+Bm*Gm+Bc*Gc+B2m*X2:Gm, \code{start}=(B0, B1, B2, Bm, Bc, B2m, fp) where fp is the log of the odds of the minor allelic frequency. However, if the user provides no values, the function uses logistic regression to compute the initial B=(B0, B1, B2, Bm, Bc, B2m) and takes 0.1 as the initial value of fp.
+The function \code{Spmlficmcm} builds the nonlinear system from the data and solves the nonlinear system. Then, it uses the log profile likelihood function and the one-step method to estimate the parameters of each factor of the model formula and their standard errors. The programme computes the gradient of the profile likelihood using the analytical formula and the Hessian matrix numerically from the gradient. The genotype is coded as the number of minor alleles. The model supposes that the distribution of maternal genotype and offspring genotype satisfy the following assumptions: \emph{random mating}, \emph{Hardy-Weinberg equilibrium} and \emph{Mendelian inheritance}. When the data contains missing offspring genotypes, the profile likelihood is summed over the possible genotypes of each child whose genotype is missing. The argument \code{typ} allows the user to specify whether the data is complete or not. Argument \code{start} permits to the user to give the initials values of model parameter. 
+Ex: in the following equation log(P/(1-P))=B0+B1*X1+B2*X2+Bm*Gm+Bc*Gc+B2m*X2:Gm, \code{start}=(B0, B1, B2, Bm, Bc, B2m, fp) where fp is the log of the odds of the minor allelic frequency. However, if the user provides no values, the function uses logistic regression to compute the initial B=(B0, B1, B2, Bm, Bc, B2m) and takes 0.1 as the initial value of fp. If the argument \code{N} is unavailable, it is possible to specify the disease population prevalence in the argument \code{p} instead of \code{N}. In that casse, \code{N1} is set equal to 5 n1, in order to avoid observing N1<n1 when prevalence is small. We then set N0=[(1-p)/p]*N1. 
 }
 \value{
  A list containing components
@@ -40,7 +42,7 @@ Ex: in the following equation log(P/(1-P))=B0+B1*X1+B2*X2+Bm*Gm+Bc*Gc+B2m*X2:Gm,
 \references{
 Jinbo Chen, Dongyu Lin and Hagit Hochner (2012) Semiparametric Maximum Likelihood Methods for Analyzing Genetic and Environmental Effects with Case-Control Mother-Child Pair Data. \emph{Biometrics} DOI: 10.1111/j.1541-0420.2011.01728.
 
-Moliere Nguile-Makao and Alexandre Bureau (2013), Semi-parametric Maximum likelihood Method for interaction in case-mother control-mother designs: Package SPmlficmcm \emph{under review}.
+Moliere Nguile-Makao and Alexandre Bureau (2014), Semi-parametric Maximum likelihood Method for interaction in case-mother control-mother designs: Package SPmlficmcm. \emph{Journal of Statistical Software, in press}.
 }
 
 \examples{
@@ -84,25 +86,43 @@ Moliere Nguile-Makao and Alexandre Bureau (2013), Semi-parametric Maximum likeli
 DatfEcd[26:30,]
 DatfEmd[26:30,]
 
-##4 Estimation of parameters===============================
+##4 Estimation of parameters=======================================================
 ## model equation         
 fl=outc~X1+X2+gm+gnch+X1:gnch+X2:gm;
 ## Estimation of the parameters (no missing data)
-        Rsnm<-Spmlficmcm(fl,N,"gm","gnch",DatfEcd,1)
+        # N = (N0,N1) is available
+        Rsnm1<-Spmlficmcm(fl,N,"gm","gnch",DatfEcd,1)
         #solution of the nonlinear system
-        round(Rsnm$Uim,digits=3)
+        round(Rsnm1$Uim,digits=3)
         #estimates
-        round(Rsnm$MatR,digits=3)
+        round(Rsnm1$MatR,digits=3)
         #variance - covariance matrix
-        round(Rsnm$Matv,digits=5)
+        round(Rsnm1$Matv,digits=5)
+        # N = (N0,N1) is not available
+        Rsnm2<-Spmlficmcm(fl=fl,gmname="gm",gcname="gnch",DatfE=DatfEcd,typ=1,p=rho)
+        #solution of the nonlinear system
+        round(Rsnm2$Uim,digits=3)
+        #estimates
+        round(Rsnm2$MatR,digits=3)
+        #variance - covariance matrix
+        round(Rsnm2$Matv,digits=5)
 ## Estimation of the parameters (with missing data)
-        Rswm<-Spmlficmcm(fl,N,"gm","gnch",DatfEmd,typ=2)
+        # N = (N0,N1) is available
+        Rswm1<-Spmlficmcm(fl,N,"gm","gnch",DatfEmd,typ=2)
         #solution of the nonlinear system
-        round(Rswm$Uim,digits=3)
+        round(Rswm1$Uim,digits=3)
         #estimates
-        round(Rswm$MatR,digits=3)
+        round(Rswm1$MatR,digits=3)
         #variance - covariance matrix
-        round(Rswm$Matv,digits=5)
+        round(Rswm1$Matv,digits=5)
+        # N = (N0,N1) is not available
+        Rswm2<-Spmlficmcm(fl=fl,gmname="gm",gcname="gnch",DatfE=DatfEmd,typ=2,p=rho)
+        #solution of the nonlinear system
+        round(Rswm2$Uim,digits=3)
+        #estimates
+        round(Rswm2$MatR,digits=3)
+        #variance - covariance matrix
+        round(Rswm2$Matv,digits=5)
 }
 }
 \keyword{semiparametric}

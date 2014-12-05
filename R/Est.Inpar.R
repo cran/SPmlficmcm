@@ -1,14 +1,34 @@
 Est.Inpar <-
-function(fl,N,gnma,gnch,tab1,typ){
+function(fl,N,gnma,gnch,tab1,typ,p=NULL){
                             # fl formule of the equation
-                            # tab : database 
+                            # tab1 : database
                             # N =(N0,N1) le nombres individus eligibles N0 temoins et N1 cas
                             # gnma : genotype de la mere 
                             # gnch : genotype de enfant
-                            # typ : indique si nous avons les donnees manquante ou non 1 seul n a pas des donnees manquantes 
-                            # nom de la variable reponse
-                            
-                            N0<-N[1];N1<-N[2];
+                            # typ : indique si nous avons les donnees manquantes ou non. 1 indique pas des donnees manquantes
+                            # p : la prevalence de la maladie 
+			                  if(missing(N))
+			                  {
+			                  if (is.null(p))
+			                  {
+			                  	print(p)
+			                  stop("Missing prevalence or N=c(N0,N1)")
+			                    }
+			                  else
+			                  {
+			                  	if (p > 0.5) stop ("Disease prevalence needs to be <= 0.5")
+			                  	if (p < 0) stop ("Negative disease prevalence")
+			                  	clb<- model.frame(fl, data = tab1)
+			                    # extraction de la variable reponse
+			                      outcb<-model.extract(clb,"response")
+			                    # nombre de cas
+			                  	n1 = sum(outcb)
+			                  	N1 = 5*n1 
+			                  	N0 = round(N1 * (1-p)/p)
+			                  	N = c(N0,N1)
+			                    }
+			                    }
+			                else N0<-N[1];N1<-N[2];
                             varz0<-all.vars(fl)[-1];vrze<-varz0[-which(varz0%in%c(gnma,gnch))]
                             outc=as.character(attr(terms.formula(fl),"variables")[[2]]) 
                             fit<-glm(fl,data=tab1,family=binomial)

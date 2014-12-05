@@ -1,5 +1,5 @@
 ft_likhoodCasM <-
-function(fl,data1,N,gmname,gcname,vecma.u,HW=TRUE)
+function(fl,data1,N,gmname,gcname,yname,vecma.u,HW=TRUE)
                    {
                     # Arguments specifiques ‡ la fonction
                     # d: vecteur des proportion de cas et de temoins echantillonnes 
@@ -9,23 +9,23 @@ function(fl,data1,N,gmname,gcname,vecma.u,HW=TRUE)
                     # ma.u est la matrice des parametre u  
                     
                     # creation de deux table une avec tous les donnees complet de c et autre avec les seules c observables
-                      lstdat<-fctcd(data1,gcname)
-                      datMod<-lstdat$datdmcp
-                      datNo<-lstdat$datnmv
-                      datMv<-lstdat$datdm
-                      datrmv<-lstdat$datmv
+                      lstdat<-fctcd(data1,gcname,yname)
+                      datMod<-lstdat$datdmcp # data des données complets (tout ijm * 3)
+                      datNo<-lstdat$datnmv # data complet c'est-à-dire pour chaque patient nous avons ijmc
+                      datMv<-lstdat$datdm  # data complété c'est à dire pour chaque coupe ijm on donne toutes les combi de c
+                      datrmv<-lstdat$datmv # data de donnée manquantes 
                       
-                    # preparation des donnees manquante 
+                    # Nom des variables
                       varz00<-all.vars(fl)
-                      # noms des labels 
+                      # # noms des labels 
                       varz0<-all.vars(fl)[-1];varz<-varz0[-which(varz0%in%c(gmname,gcname))]
-                      re<-rep(1,dim(datrmv)[1])
-                      datrmv1<-data.frame(datrmv,re)
-                      datrmv2<-fpol1(datrmv1,c(varz00[1],varz,gmname),"re","nijm")
-                      vec<-c(0,1,2);#datrmvc<-datrmv2
-                      gcamv<-rep(vec,dim(datrmv2)[1])
-                      datrmv3<-datrmv2[rep(1:nrow(datrmv2),rep(3,nrow(datrmv2))),]
-                      datrmv3[gcname]<-gcamv
+                      # re<-rep(1,dim(datrmv)[1])
+                      # datrmv1<-data.frame(datrmv,re)
+                      # datrmv2<-fpol1(datrmv1,c(yname,varz,gmname),"re","nijm")
+                      # vec<-c(0,1,2);#datrmvc<-datrmv2
+                      # gcamv<-rep(vec,dim(datrmv2)[1])
+                      # datrmv3<-datrmv2[rep(1:nrow(datrmv2),rep(3,nrow(datrmv2))),]
+                      # datrmv3[gcname]<-gcamv
                       
                     # A partie des donnees complet  
                     # A.1-Generer la data.frame du modele
@@ -37,17 +37,22 @@ function(fl,data1,N,gmname,gcname,vecma.u,HW=TRUE)
                       gm <- vx[,gmname]
                     # Extraction du vecteur de genotypes de l enfant
                       gc <- vx[,gcname]
+                      vdcop<-datMod[,"vdcop"]
                     
                     # B partie des donnees imcomplet  
                     # B.1-Generer le "frame" du modele
-                      clb<- model.frame(fl, data = datrmv3)
-                      vxb <- model.matrix(fl,data=datrmv3)
+#                      clb<- model.frame(fl, data = datrmv3)
+#                      vxb <- model.matrix(fl,data=datrmv3)
+                      clb<- model.frame(fl, data = datMv)
+                      vxb <- model.matrix(fl,data=datMv)
                     # extarction de la variable reponse
                       outcb<-model.extract(clb,"response")
                     # Extraction du vecteur de genotypes de la mere
                       gmb <- vxb[,gmname]
                     # Extraction du vecteur de genotypes de lenfant
                       gcb <- vxb[,gcname]
+                      vdcopb<-datMv[,"vdcop"]
+                      idm = datMv["id"]                      
                     
                     # C partite commune 
                     # les valeurs possibles du geotype de la mere
@@ -58,31 +63,35 @@ function(fl,data1,N,gmname,gcname,vecma.u,HW=TRUE)
                       #indfg<-IndF3(gm)
                       ppd<-length(vecma.u);pp<-ppd/2;uu<-pp+1
                       ma.u<-rbind(vecma.u[1:pp],vecma.u[uu:ppd])
+
+					# Données de tous les sujets                      
+                      vxt = rbind(vx,vxb)
+                    # Extraction du vecteur de genotypes de la mere
+                      gmt <- vxt[,gmname]
+                    # Extraction du vecteur de genotypes de lenfant
+                      gct <- vxt[,gcname]
+                    # Vecteur de réponse
+                      outct = c(outc,outcb)
                       
                     # 2-Construction du systeme non lineaire =======================================
                     # A-2.1-creation de la table A
                         matd<-cbind(outc,vx)
                         np<-dim(vx)[2]
-                        mat.geno<-cbind(gm,gc);
                     
-                    # B-2.1-creation de la table A
+                    # B-2.1-creation de la table B
                         matdb<-cbind(outcb,vxb)
-                        mat.genob<-cbind(gmb,gcb);
                         
                         d<-vector()
-                        d[1]<-N[1]-dim(datNo[datNo[noutc]==0,])[1]
-                        d[2]<-N[2]-dim(datNo[datNo[noutc]==1,])[1]
-                        
-                       
+                        d[1]<-N[1]-sum(data1[,noutc]==0)
+                        d[2]<-N[2]-sum(data1[,noutc]==1)
+                                               
                    # A- construction des indices
-                        Nijmc<-fpol1(datMod,c("outc",varz,gmname,gcname),"vdcop","nijmc") 
-                          
-                        # construction N++m+
-                        #n0<-c(sum(Nijmc[Nijmc[gmname]==0,]["nijmc"]),sum(Nijmc[Nijmc[gmname]==1,]["nijmc"]),sum(Nijmc[Nijmc[gmname]==2,]["nijmc"])) 
+                        or<-rep(1,dim(data1)[1])
+                        data_ori<-data.frame(data1,or)
                         
                         #construction de Cjm 
-                        mat.cjm<-fpol1(Nijmc,c(varz,gmname),"nijmc","Cjm")
-                          
+                         mat.cjm<-fpol1(data_ori,c(varz,gmname),"or","Cjm")  
+
                     ## calcule de hijmc
                     ## la fonction de vraisemblence 
                     liklihood_prof<-function(parms){
@@ -117,7 +126,6 @@ function(fl,data1,N,gmname,gcname,vecma.u,HW=TRUE)
                                     # B-calcul du genotype 
                                     Pgmb<-Prgm_HW1(matdb[,gmname],theta.start)
                                     
-                                    vdcop<-datMod["vdcop"]
                                     # data.frame A
                                     nam<-c("outc",varz,gmname,gcname,"vdcop","Pijmc","Pgcm","Pgm","Hijmc")
                                     mat.Hijmc<-data.frame(outc,nva,gm,gc,vdcop,Pijmc,Pgcm,Pgm,Hijmc)
@@ -126,23 +134,40 @@ function(fl,data1,N,gmname,gcname,vecma.u,HW=TRUE)
                                     matHijmc.Nijmc<-matHijmc.nijmc[matHijmc.nijmc[,"Hijmc"]!=0,]
                                     
                                     #B-data.frame 
-                                    namb<-c("outc",varz,gmname,gcname,"Pijmc","Pgcm","Pgm","Hijmc")
-                                    mat.Hijmcb<-data.frame(outcb,nvab,gmb,gcb,Pijmcb,Pgcmb,Pgmb,Hijmcb)
+                                    namb<-c("idm","outc",varz,gmname,gcname,"Pijmc","Pgcm","Pgm","Hijmc")
+                                    mat.Hijmcb<-data.frame(idm,outcb,nvab,gmb,gcb,Pijmcb,Pgcmb,Pgmb,Hijmcb)
                                     names(mat.Hijmcb)<-namb;
-                                    mat.hijmcb1<-mat.Hijmcb[mat.Hijmcb[,"Hijmc"]!=0,]
-                                    mat.hijmb<-fpol1(mat.hijmcb1,c("outc",varz,gmname,"Pgm"),"Hijmc","Hijm")
-                                    mat.hijmd<-merge(datrmv2,mat.hijmb,by=c("outc",varz,gmname))
+#                                    mat.hijmcb1<-mat.Hijmcb[mat.Hijmcb[,"Hijmc"]!=0,]
+                                    mat.hijmcb1<-mat.Hijmcb[mat.Hijmcb[,"Hijmc"]!=0&vdcopb==1,]
+#                                    mat.hijmb<-fpol1(mat.hijmcb1,c("outc",varz,gmname,"Pgm"),"Hijmc","Hijm")
+                                    mat.hijmb<-fpol1(mat.hijmcb1,c("idm","outc",varz,gmname,"Pgm"),"Hijmc","Hijm")
+#                                    mat.hijmd<-merge(datrmv2,mat.hijmb,by=c("outc",varz,gmname))
                                     
+                                    #C-data.frame
+                                    vdcopt = c(vdcop,vdcopb)
+                                    nvat<-vxt[,varz]
+                                    Pijmct = c(Pijmc,Pijmcb)                                    
+                                    Pgcmt = c(Pgcm,Pgcmb)                                    
+                                    Pgmt = c(Pgm,Pgmb)
+                                    Hijmct = c(Hijmc,Hijmcb)                                    
+                                    mat.Hijmct<-data.frame(outct,nvat,gmt,gct,vdcopt,Pijmct,Pgcmt,Pgmt,Hijmct)
+                                    names(mat.Hijmct)<-nam;
+                                    # Ici on ne se sert pas de nijmc. Tout ce que ceci fait, c'est enlever
+                                    # les observations redondantes de mat.Hijmct
+                                    matHijmct.nijmc<-fpol1(mat.Hijmct,c("outc",varz,gmname,gcname,"Pgm","Hijmc"),"vdcop","nijmc")
+                                    matHijmct.Nijmc<-matHijmct.nijmc[matHijmct.nijmc[,"Hijmc"]!=0,]
+                                                                        
                                     # A-compte les modalite i,j,m,c
                                     # premier terme 
                                     q1<-sum(log(matHijmc.Nijmc[,"Hijmc"])*(matHijmc.Nijmc[,"nijmc"]))  
                                     
                                     # B-compte les modalite i,j,m,c
                                     # premier terme 
-                                    q1b<-sum(log(mat.hijmd[,"Hijm"])*(mat.hijmd[,"nijm"]))  
+#                                    q1b<-sum(log(mat.hijmd[,"Hijm"])*(mat.hijmd[,"nijm"]))
+									q1b<-sum(log(mat.hijmb[,"Hijm"]))  
                                             
                                     # 2.2-calcule de q2          
-                                    mat.Hijm<-fpol1(matHijmc.Nijmc,c("outc",varz,gmname,"Pgm"),"Hijmc","Hijm")
+                                    mat.Hijm<-fpol1(matHijmct.Nijmc,c("outc",varz,gmname,"Pgm"),"Hijmc","Hijm")
                                     Hijm<-mat.Hijm$Hijm
                                     # nv ** 6
                                      matHijm.uim<-function(ma.u){

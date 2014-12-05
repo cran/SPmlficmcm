@@ -52,4 +52,3 @@ set.seed(13200)
    DatfE1<-SeltcEch("outc",n1,n0,"obs",Dataf)
    DatfE1[1:10,] 
 }
-

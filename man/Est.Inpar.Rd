@@ -7,7 +7,7 @@ Computes the initial values
 Computes initial values of the model parameters.
 }
 \usage{
-Est.Inpar(fl, N, gnma, gnch, tab1, typ)
+Est.Inpar(fl, N, gnma, gnch, tab1, typ, p = NULL)
 }
 \arguments{
   \item{fl}{Model formula.
@@ -22,9 +22,11 @@ Est.Inpar(fl, N, gnma, gnch, tab1, typ)
 }
   \item{typ}{Argument that specifies whether the data are complete (1) or there are missing offspring genotypes (2). 
 }
+ \item{p}{Disease prevalence 
+}
 }
 \details{
-The function use logistic regression to evaluate the initial values of the equation parameters given by the formula and uses empirical estimation to compute the initial values of the nonlinear system. For details, see \emph{Nguile-Makao et al., (2013)} .
+The function use logistic regression to evaluate the initial values of the equation parameters given by the formula and uses empirical estimation to compute the initial values of the nonlinear system. For details, see \emph{Nguile-Makao et al., (2014)} .
 }
 \value{
 A list containing components
@@ -35,5 +37,5 @@ A list containing components
 \code{\link{Spmlficmcm}}
 }
 \references{
-Moliere Nguile-Makao, Alexandre Bureau (2013), Semi-parametric Maximum likelihood Method for interaction in case-mother control-mother designs: Package SPmlficmcm \emph{under review}.
+Moliere Nguile-Makao, Alexandre Bureau (2014), Semi-parametric Maximum likelihood Method for interaction in case-mother control-mother designs: Package SPmlficmcm. \emph{Journal of Statistical Software, in press}.
 }

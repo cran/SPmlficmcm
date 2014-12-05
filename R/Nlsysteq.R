@@ -1,5 +1,5 @@
 Nlsysteq <-
-function(fl,data1,N,gmname,gcname,beta.start=NULL,theta.start=NULL,HW=TRUE)
+function(fl,data1,N,gmname,gcname,yname,beta.start=NULL,theta.start=NULL,HW=TRUE)
                    {
                     # Arguments specifiques ‡ la fonction
                     # d: vecteur des proportions des cas et des temoins echantillonnes (verifie Moliere)
@@ -45,7 +45,7 @@ function(fl,data1,N,gmname,gcname,beta.start=NULL,theta.start=NULL,HW=TRUE)
                                  }else{
                                  
                     # creation de deux table une avec tous les donnees complet de c et l autre avec les seules c observables
-                      lstdat<-fctcd(data1,gcname)
+                      lstdat<-fctcd(data1,gcname,yname)
                       datMod<-lstdat$datdmcp
                       datNo<-lstdat$datnmv
                     # 1-Generer le "frame" du modele

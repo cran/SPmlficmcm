@@ -1,8 +1,8 @@
-fpol1 <-
+fpolm <-
 function(dets,vec,vars,nom,garder=NULL){
                                        # dets : la table 
                                        # vec : vecteur de variable a fixe,
-                                       # vars :  variable a sommer
+                                       # vars :  variables a sommer
                                        # garder : variables à garder tel quel
                                        # nom : nom de la nouvelle var
                                        n<-length(vec)
@@ -14,15 +14,17 @@ function(dets,vec,vars,nom,garder=NULL){
                                        ux<-round(ux,digits=4)
                                        uxf<-duplicated(ux)
                                        dats1<-data.frame(dets[,c(vec,garder)],ux,uxf)
-                                       names(dats1)<-c(c(vec,garder),"ux","uxf")
+                                       names(dats1)<-c(vec,garder,"ux","uxf")
                                        ndats1<-dats1[dats1["uxf"]==FALSE,]
                                        ndets1<-ndats1[,c(vec,garder,"ux")]                          
                                        #nvt<-dets1[duplicated(dets1)==FALSE,] 
-                                       names(ndets1)<-c(vec,garder,"ux")              
-                                       vs<-tapply(dets[,vars],ux,sum)
+                                       names(ndets1)<-c(vec,garder,"ux")
+                                       vs<-tapply(dets[,vars[1]],ux,sum)
                                        id<-as.numeric(names(vs))
+                                       for (j in 2:length(vars))              
+                                         vs<-cbind(vs,tapply(dets[,vars[j]],ux,sum))
+                                       rownames(vs)<-NULL
                                        tab<-data.frame(id,vs)
-                                       rownames(tab)<-NULL                                       
                                        names(tab)<-c("ux",nom)
                                        tab2<-merge(ndets1,tab,by=c("ux","ux"))
                                        tab2$ux<-NULL

@@ -1,7 +1,7 @@
 fct_invCap <-
 function(dat,Ni,vrzc,vrze,genm,genc,theta.start){
             #dat : donnee
-            #vrzc variable outcome; vrze : variable explicative, gm : gnotype de la mere gc : genotype de lenfant
+            #vrzc variable outcome; vrze : variable explicative, genm : gnotype de la mere genc : genotype de lenfant
             n<-dim(dat)[1];n1<-dim(dat[dat[vrzc]==1,])[1];n0<-n-n1;ni=c(n0,n1);di=Ni-ni;N=sum(Ni)
             r1=(di[2]+n1)/N;r0=1-r1
             # nv
@@ -36,7 +36,7 @@ function(dat,Ni,vrzc,vrze,genm,genc,theta.start){
                                  }
             if(length(vep)==2 & sum(vep)==1){
                                                nm<-c(sum(Nijmc[Nijmc[,genm]==0,][,"Cjm"]),sum(Nijmc[Nijmc[,genm]==1,][,"Cjm"]))  
-                                # construction de lestimateur de Nm^*
+                               # construction de lestimateur de Nm^*
                                pgi1<-di[2]*(dim(da1[da1[,genm]==0,])[1]/m1)+di[1]*(dim(da0[da0[,genm]==0,])[1]/m0)
                                pgi2<-di[2]*(dim(da1[da1[,genm]==1,])[1]/m1)+di[1]*(dim(da0[da0[,genm]==1,])[1]/m0)
                                pg<-c(pgi1,pgi2)

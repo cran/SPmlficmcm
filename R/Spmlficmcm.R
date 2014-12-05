@@ -1,9 +1,44 @@
 Spmlficmcm <-
-function(fl,N,gmname,gcname,DatfE,typ,start){ 
+function(fl,N,gmname,gcname,DatfE,typ,start,p=NULL){ 
                   # ============================================================ 
                   # Etape 1 estimation des valeurs initiales 
                   # Valeurs initiales des parametre du modele 
                   # baterie des tests
+                  yname = all.vars(fl)[1]
+                  if(missing(N))
+                  {
+                  if (is.null(p))
+                  {
+                  	print(p)
+                  stop("Missing prevalence or N=c(N0,N1)")
+                    }
+                  else
+                  {
+                  	if (p > 0.5) stop ("Disease prevalence needs to be <= 0.5")
+                  	if (p < 0) stop ("Negative disease prevalence")
+                  	clb<- model.frame(fl, data = DatfE)
+                    # extraction de la variable reponse
+                      outcb<-model.extract(clb,"response")
+                    # nombre de cas
+                  	n1 = sum(outcb)
+                  	N1 = 5*n1 
+                  	N0 = round(N1 * (1-p)/p)
+                  	N<-c(N0,N1)
+                    #print (N)
+                    }
+                    }
+                    else
+                    {
+                    # modèle
+                    clb1<- model.frame(fl, data = DatfE)
+                    # extraction de la variable reponse
+                    outcb1<-model.extract(clb1,"response")
+                    # conditions
+                    n1<-sum(outcb1)
+                    n0<-length(outcb1)-n1
+                    if(N[1]<n0 | N[2]<n1){print(N)
+                     stop("The cases number or the controls in the study population is lower than cases or controls of study sample")
+                    }else{
                     genom<-DatfE[gmname];genom1<-genom[is.na(genom)!=TRUE]
                     genoen<-DatfE[gcname];genoen1<-genoen[is.na(genoen)!=TRUE]
                     nagm<-genom[is.na(genom)==TRUE]
@@ -13,7 +48,7 @@ function(fl,N,gmname,gcname,DatfE,typ,start){
                     teg1<-ifelse(gt1==0 & gt2==2,1,0)
                     teg2<-ifelse(gt1==2 & gt2==0,1,0)
                     tegk<-teg1+teg2
-                    # conditions
+                    
                     if(length(nagm)>0){print(gmname)
                                       stop("missing mother genotype value")} 
                     if(min(genom1)<0){print(gmname)
@@ -34,33 +69,56 @@ function(fl,N,gmname,gcname,DatfE,typ,start){
                                 }   
                     if(missing(start)){parms<-vIn$parms
                                              }else{parms<-start}
-                    beta.start=parms[1:length(parms)-1];
-                    theta.start=parms[length(parms)]
+                    p = length(parms)
+                    beta.start=parms[1:(p-1)];
+                    theta.start=parms[p]
                   # Valeurs initiales du systeme d quation non linaire
                   ma.u<-vIn$ma.u
                   vecma.u=c(ma.u[1,],ma.u[2,]) 
                   #=============================================================
                   # Etape 2 resolution du systeme d equation  
-                  RSeq<-Nlsysteq(fl,DatfE,N,gmname,gcname,beta.start,theta.start)
+                  RSeq<-Nlsysteq(fl,DatfE,N,gmname,gcname,yname,beta.start,theta.start)
                   SS<-nleqslv(vecma.u,RSeq) 
                   vecma.u<-SS$x
                   #=============================================================
                   # Etape 3 ecriture de la vraisemblance profile
                   if(typ==1){
-                    ftlh<-ft_likhoodCas1(fl,DatfE,N,gmname,gcname,vecma.u)
+                    ftlh<-ft_likhoodCas1(fl,DatfE,N,gmname,gcname,yname,vecma.u)
                             }else{
-                    ftlh<-ft_likhoodCasM(fl,DatfE,N,gmname,gcname,vecma.u)
+                    ftlh<-ft_likhoodCasM(fl,DatfE,N,gmname,gcname,yname,vecma.u)
                                   }        
                   #=============================================================
                   # Etape 4 calcul des estimateurs  
-                  # calcul du gradian
-                  Grad1<-grad(ftlh,parms)
-                  #calcul de la hessian
-                  Hes<-hessian(ftlh,parms);
-                  # estimateur des parametre
-                  Parms.est=parms-solve(Hes)%*%Grad1
-                  # calcul de la variance 
-                  Hes1<-hessian(ftlh,Parms.est);
+                  # calcul du gradient
+                   if(typ==1){
+				   fctgrad<-ft_gradientCas1(fl,DatfE,N,gmname,gcname,yname,vecma.u)
+				   }
+				   else{
+				   fctgrad<-ft_gradientCasM(fl,DatfE,N,gmname,gcname,yname,vecma.u)
+				   }	
+				   Grad<-fctgrad(parms)
+                   #calcul de la hessian
+                   delta <- 1e-5;
+                   hess <- matrix(0, p, p);
+                   for(gg in 1:p){
+                   delta_ggamma <- parms;
+                   delta_ggamma[gg]<- delta_ggamma[gg] + delta;
+                   hess[, gg]<-(fctgrad(delta_ggamma) - Grad)/delta;
+                   }
+                  
+                   # estimateur des parametres
+                   Parms.est=parms-solve(hess)%*%Grad
+                   # calcul de la variance
+    
+				   Grad1<-fctgrad(Parms.est)
+				   # Code de débuggage
+				   # print(Grad1)
+                   Hes1 <- matrix(0, p, p);
+                   for(gg in 1:p){
+                   delta_ggamma <- Parms.est;
+                   delta_ggamma[gg] <- delta_ggamma[gg] + delta;
+                   Hes1[, gg] <- (fctgrad(delta_ggamma) - Grad1)/delta;
+                   }
                   matv<-(-1)*solve(Hes1)
                   var.par<-sqrt(diag(matv))
                   #=============================================================
@@ -71,7 +129,9 @@ function(fl,N,gmname,gcname,DatfE,typ,start){
                   colnames(mats)<-nac
                   rownames(mats)<-nma
                   loglik<-ftlh(mats[,"Estimate"])
-                  rr<-list(Uim=vecma.u,MatR=mats,Matv=matv,Lhft=ftlh,Value_loglikh=loglik)
+                  rr<-list(N=N,Uim=vecma.u,MatR=mats,Matv=matv,Lhft=ftlh,Value_loglikh=loglik)
                   return(rr)
                   }
+                  }
+                    }
                   }

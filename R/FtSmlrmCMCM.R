@@ -47,12 +47,16 @@ function(fl,N,theta,beta,interc,vpo,vprob,vcorr){
                 dat1<-data.frame(Y2,dat,gm,gc);
                 names(dat1)<-nva;
                 vx <- model.matrix(fl,data=dat1)
+                # la fonction logistique
+                logistic <- function(x){
+                            return(1/(1+exp(-x)))
+                            }
                 # intercepte
                 beta1=c(interc,beta)
                 # la fonction qui l inverse du logit
                 thet1 <- function(x){ 
                                     logit.theta <-x%*%beta1 
-                                    inv.logit(logit.theta) 
+                                    logistic(logit.theta)
                                     } 
                 # la proba de la reponse 
                 dat2<-data.frame(dat,gm,gc);  

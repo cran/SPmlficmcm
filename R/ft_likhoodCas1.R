@@ -1,5 +1,5 @@
 ft_likhoodCas1 <-
-function(fl,data1,N,gmname,gcname,vecma.u,HW=TRUE)
+function(fl,data1,N,gmname,gcname,yname,vecma.u,HW=TRUE)
                    {
                     # Arguments specifiques ‡ la fonction
                     # d: vecteur des proportion de cas et de temoins echantillonnes 
@@ -9,7 +9,7 @@ function(fl,data1,N,gmname,gcname,vecma.u,HW=TRUE)
                     # ma.u est la matrice des parametre u  
                     
                     # creation de deux table une avec tous les donnees complet de c et l autre avec les seules c observables
-                      lstdat<-fctcd(data1,gcname)
+                      lstdat<-fctcd(data1,gcname,yname)
                       datMod<-lstdat$datdmcp
                       datNo<-lstdat$datnmv
                       
@@ -42,15 +42,6 @@ function(fl,data1,N,gmname,gcname,vecma.u,HW=TRUE)
                         d[1]<-N[1]-dim(datNo[datNo[noutc]==0,])[1]
                         d[2]<-N[2]-dim(datNo[datNo[noutc]==1,])[1]
                        
-                       # construction des indices
-                        Nijmc<-fpol1(datMod,c("outc",varz,gmname,gcname),"vdcop","nijmc")
-                        
-                        # construction N++m+
-                        
-                        #if(dim(Nijmc[Nijmc[gmname]==0,]["nijmc"])[1]==0){a1<-0}else{a1<-sum(Nijmc[Nijmc[gmname]==0,]["nijmc"])}
-                        #if(dim(Nijmc[Nijmc[gmname]==1,]["nijmc"])[1]==0){a2<-0}else{a2<-sum(Nijmc[Nijmc[gmname]==1,]["nijmc"])}
-                        #if(dim(Nijmc[Nijmc[gmname]==2,]["nijmc"])[1]==0){a3<-0}else{a3<-sum(Nijmc[Nijmc[gmname]==2,]["nijmc"])} 
-                        #n0<-c(a1,a2,a3) 
                         #construction de Cjm 
                         mat.cjm<-fpol1(datMod,c(varz,gmname),"vdcop","Cjm")
                           
@@ -60,7 +51,8 @@ function(fl,data1,N,gmname,gcname,vecma.u,HW=TRUE)
                                     beta.start<-parms[1:np];n1<-np+1;theta.start<-parms[n1:length(parms)]
                                     
                                     # nv
-                                    Pijmc<-((1/(exp((-1)*vx%*%beta.start)+1))^outc)*((1-1/(exp((-1)*(vx%*%beta.start))+1))^(1-outc))
+                                    eta = vx%*%beta.start
+                                    Pijmc<-((1/(exp(-eta)+1))^outc)*((1-1/(exp(-eta)+1))^(1-outc))
                                
                                     # construction de la distribution conditionnelle du genotype de l enfant sachant la mere et celle de la mere selon que nous sommes sous HW ou non
                                     # nv
