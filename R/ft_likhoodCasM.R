@@ -1,7 +1,7 @@
 ft_likhoodCasM <-
 function(fl,data1,N,gmname,gcname,yname,vecma.u,HW=TRUE)
                    {
-                    # Arguments specifiques ‡ la fonction
+                    # Arguments specifiques  la fonction
                     # d: vecteur des proportion de cas et de temoins echantillonnes 
                     # gmname: nom de la variable contenant le genotype de la mere
                     # gcname: nom de la variable contenant le genotype de enfant
@@ -10,10 +10,10 @@ function(fl,data1,N,gmname,gcname,yname,vecma.u,HW=TRUE)
                     
                     # creation de deux table une avec tous les donnees complet de c et autre avec les seules c observables
                       lstdat<-fctcd(data1,gcname,yname)
-                      datMod<-lstdat$datdmcp # data des données complets (tout ijm * 3)
-                      datNo<-lstdat$datnmv # data complet c'est-à-dire pour chaque patient nous avons ijmc
-                      datMv<-lstdat$datdm  # data complété c'est à dire pour chaque coupe ijm on donne toutes les combi de c
-                      datrmv<-lstdat$datmv # data de donnée manquantes 
+                      datMod<-lstdat$datdmcp # data des donnees complets (tout ijm * 3)
+                      datNo<-lstdat$datnmv # data complet c'est-a-dire pour chaque patient nous avons ijmc
+                      datMv<-lstdat$datdm  # data complete c'est a dire pour chaque coupe ijm on donne toutes les combi de c
+                      datrmv<-lstdat$datmv # data de donnee manquantes 
                       
                     # Nom des variables
                       varz00<-all.vars(fl)
@@ -64,13 +64,13 @@ function(fl,data1,N,gmname,gcname,yname,vecma.u,HW=TRUE)
                       ppd<-length(vecma.u);pp<-ppd/2;uu<-pp+1
                       ma.u<-rbind(vecma.u[1:pp],vecma.u[uu:ppd])
 
-					# Données de tous les sujets                      
+					# Donnees de tous les sujets                      
                       vxt = rbind(vx,vxb)
                     # Extraction du vecteur de genotypes de la mere
                       gmt <- vxt[,gmname]
                     # Extraction du vecteur de genotypes de lenfant
                       gct <- vxt[,gcname]
-                    # Vecteur de réponse
+                    # Vecteur de reponse
                       outct = c(outc,outcb)
                       
                     # 2-Construction du systeme non lineaire =======================================

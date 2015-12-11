@@ -9,5 +9,6 @@ function(data,d,gmname,gcname,outc,HW=TRUE){
                    vd<-ifelse(ll==1,d[2],d[1])
                    if(HW==TRUE){fctp<-function(p){return(sum(vd*logDgmc_HW1(dof,p)))}
                                 }else{fctp<-NULL} 
+                   
                    return(fctp)
                    }

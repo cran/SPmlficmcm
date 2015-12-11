@@ -1,7 +1,7 @@
 Nlsysteq <-
 function(fl,data1,N,gmname,gcname,yname,beta.start=NULL,theta.start=NULL,HW=TRUE)
                    {
-                    # Arguments specifiques ‡ la fonction
+                    # Arguments specifiques la fonction
                     # d: vecteur des proportions des cas et des temoins echantillonnes (verifie Moliere)
                     # gmname: nom de la variable contenant le genotype de la mere
                     # gcname: nom de la variable contenant le genotype de l enfant

@@ -27,9 +27,9 @@ function(fl,N,gmname,gcname,DatfE,typ,start,p=NULL){
                     #print (N)
                     }
                     }
-                    else
-                    {
-                    # modèle
+                  #else
+                  #{
+                    # modele
                     clb1<- model.frame(fl, data = DatfE)
                     # extraction de la variable reponse
                     outcb1<-model.extract(clb1,"response")
@@ -111,7 +111,7 @@ function(fl,N,gmname,gcname,DatfE,typ,start,p=NULL){
                    # calcul de la variance
     
 				   Grad1<-fctgrad(Parms.est)
-				   # Code de débuggage
+				   # Code de debuggage
 				   # print(Grad1)
                    Hes1 <- matrix(0, p, p);
                    for(gg in 1:p){
@@ -133,5 +133,5 @@ function(fl,N,gmname,gcname,DatfE,typ,start,p=NULL){
                   return(rr)
                   }
                   }
-                    }
+                    #}
                   }

@@ -36,7 +36,7 @@ function(dat,Ni,vrzc,vrze,genm,genc,theta.start){
                                  }
             if(length(vep)==2 & sum(vep)==1){
                                                nm<-c(sum(Nijmc[Nijmc[,genm]==0,][,"Cjm"]),sum(Nijmc[Nijmc[,genm]==1,][,"Cjm"]))  
-                               # construction de lestimateur de Nm^*
+                                # construction de lestimateur de Nm^*
                                pgi1<-di[2]*(dim(da1[da1[,genm]==0,])[1]/m1)+di[1]*(dim(da0[da0[,genm]==0,])[1]/m0)
                                pgi2<-di[2]*(dim(da1[da1[,genm]==1,])[1]/m1)+di[1]*(dim(da0[da0[,genm]==1,])[1]/m0)
                                pg<-c(pgi1,pgi2)

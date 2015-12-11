@@ -1,7 +1,7 @@
 ft_gradientCas1 <-
 function(fl,data1,N,gmname,gcname,yname,vecma.u,HW=TRUE)
                    {
-                    # Arguments specifiques ‡ la fonction
+                    # Arguments specifiques  la fonction
                     # d: vecteur des proportion de cas et de temoins echantillonnes 
                     # gmname: nom de la variable contenant le genotype de la mere
                     # gcname: nom de la variable contenant le genotype de l enfant
@@ -59,13 +59,13 @@ function(fl,data1,N,gmname,gcname,yname,vecma.u,HW=TRUE)
                                     # nv
                                     # prob conditionel de l'enf sachant la mere Pc/m matd
                                     Pgcm<-Prgcm_HW1(matd[,c(gmname,gcname)],theta.start)
-                                    # Dérivée de la prob conditionel de l'enf sachant la mere                                    
+                                    # Derivee de la prob conditionel de l'enf sachant la mere                                    
                                     dPgcm.theta<-dPrgcm_HW1.theta(matd[,c(gmname,gcname)],theta.start)
                                     dlogPgcm.theta<-dlogPrgcm_HW1.theta(matd[,c(gmname,gcname)],theta.start)
                                                                                                             
                                     # calcul de la fonction hijmc 
                                     Hijmc<-Pijmc*Pgcm
-                                    # calcul des dérivées de la fonction hijmc                                    
+                                    # calcul des derivees de la fonction hijmc                                    
                                     dHijmc.eta<-dPijmc.eta * Pgcm
                                     dHijmc.theta<-Pijmc * dPgcm.theta   
                                                                      
@@ -73,7 +73,7 @@ function(fl,data1,N,gmname,gcname,yname,vecma.u,HW=TRUE)
                                     
                                     # calcul du genotype 
                                     Pgm<-Prgm_HW1(matd[,gmname],theta.start)
-                                    # calcul de sa dérivée
+                                    # calcul de sa derivee
                                     dPgm.theta<-dPrgm_HW1.theta(matd[,gmname],theta.start)
                                                                         
                                     vdcop<-datMod["vdcop"]
@@ -100,7 +100,7 @@ function(fl,data1,N,gmname,gcname,yname,vecma.u,HW=TRUE)
                                     # Somme sur c de Hijmc
                                     mat.Hijm<-fpol1(mat.Hijmc,c("outc",varz,gmname,"Pgm"),"Hijmc","Hijm","dPgm.theta")
                                     dHijmc.names = paste("dHijmc.",colnames(vx),sep="") 
-                                    # Multiplication des termes de dérivée à sommer par la matrix de design    
+                                    # Multiplication des termes de derivee a sommer par la matrix de design    
                                     mat.Hijmc[,dHijmc.names] = mat.Hijmc[,colnames(vx)]*mat.Hijmc$dHijmc.eta                                    
                                     # Somme sur c de dHijmc.beta
                                     dHijm.names = paste("dHijm.",colnames(vx),sep="") 
@@ -136,7 +136,7 @@ function(fl,data1,N,gmname,gcname,yname,vecma.u,HW=TRUE)
                                       
                                     tab.cjm<-merge(mat.cjm,mat.fjm,by=c(varz,gmname))
                                     qjm<-tab.cjm$Cjm/tab.cjm$Fjm
-                                    # termes de dérivée à sommer sur j pour obtenir dNm.beta et dNm.theta
+                                    # termes de derivee a sommer sur j pour obtenir dNm.beta et dNm.theta
                                     djm.beta<-(-tab.cjm$Cjm/tab.cjm$Fjm^2)*tab.cjm[,dFjm.names]                                    
                                     djm.theta<-(-tab.cjm$Cjm/tab.cjm$Fjm^2)*tab.cjm$dFjm.theta
                                
@@ -192,7 +192,7 @@ function(fl,data1,N,gmname,gcname,yname,vecma.u,HW=TRUE)
                                     # nv 
                         			mat.Zim<-fpol1(tab.Zijm,c("outc",gmname),"Zijm","Zim")
                         			dg312.names = paste("dg312.",colnames(vx),sep="")
-                        			# Attention! Ici, pour une raison inexpliquée, il faut que c(gmname,"outc") soient dans cet ordre pour un résultat correct                                                                        
+                        			# Attention Ici, pour une raison inexpliquee, il faut que c(gmname,"outc") soient dans cet ordre pour un resultat correct                                                                        
                         			mat.dg312<-fpolm(tab.dg312,c(gmname,"outc"),c(names(dg312j.beta),"dg312j.theta"),c(dg312.names,"dg312.theta"))
                         			
 			
@@ -213,7 +213,7 @@ function(fl,data1,N,gmname,gcname,yname,vecma.u,HW=TRUE)
                                     
                                     tmp = merge(tab.wim,mat.dg312,by=c("outc",gmname))                                     
                                     mat.dg31 = merge(tmp,mat.dg311,by=gmname)
-                                    # Attention! En sommant les variables dg311.beta et dg312.names, le résultat garde les noms dg311.beta                                  
+                                    # Attention En sommant les variables dg311.beta et dg312.names, le resultat garde les noms dg311.beta                                  
                                     dg31.beta = mat.dg31[,names(dg311.beta)]*mat.dg31$Zim + mat.dg31$Rm*mat.dg31[,dg312.names]
                                     dg31.theta = mat.dg31$dg311.theta*mat.dg31$Zim + mat.dg31$Rm*mat.dg31$dg312.theta                                    
 

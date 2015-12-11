@@ -42,7 +42,7 @@ Ex: in the following equation log(P/(1-P))=B0+B1*X1+B2*X2+Bm*Gm+Bc*Gc+B2m*X2:Gm,
 \references{
 Jinbo Chen, Dongyu Lin and Hagit Hochner (2012) Semiparametric Maximum Likelihood Methods for Analyzing Genetic and Environmental Effects with Case-Control Mother-Child Pair Data. \emph{Biometrics} DOI: 10.1111/j.1541-0420.2011.01728.
 
-Moliere Nguile-Makao and Alexandre Bureau (2014), Semi-parametric Maximum likelihood Method for interaction in case-mother control-mother designs: Package SPmlficmcm. \emph{Journal of Statistical Software, in press}.
+Moliere Nguile-Makao, Alexandre Bureau (2015), Semi-Parametric Maximum likelihood Method for interaction in Case-Mother Control-Mother designs: Package SPmlficmcm. \emph{Journal of Statistical Software DOI: 10.18637/jss.v068.i10}.
 }
 
 \examples{

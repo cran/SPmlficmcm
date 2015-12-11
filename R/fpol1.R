@@ -3,7 +3,7 @@ function(dets,vec,vars,nom,garder=NULL){
                                        # dets : la table 
                                        # vec : vecteur de variable a fixe,
                                        # vars :  variable a sommer
-                                       # garder : variables à garder tel quel
+                                       # garder : variables a garder tel quel
                                        # nom : nom de la nouvelle var
                                        n<-length(vec)
                                        ux=0

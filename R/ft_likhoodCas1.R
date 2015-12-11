@@ -1,7 +1,7 @@
 ft_likhoodCas1 <-
 function(fl,data1,N,gmname,gcname,yname,vecma.u,HW=TRUE)
                    {
-                    # Arguments specifiques ‡ la fonction
+                    # Arguments specifiques  la fonction
                     # d: vecteur des proportion de cas et de temoins echantillonnes 
                     # gmname: nom de la variable contenant le genotype de la mere
                     # gcname: nom de la variable contenant le genotype de l enfant

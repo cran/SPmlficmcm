@@ -28,7 +28,7 @@ function(fl,N,gnma,gnch,tab1,typ,p=NULL){
 			                  	N = c(N0,N1)
 			                    }
 			                    }
-			                else N0<-N[1];N1<-N[2];
+			                N0<-N[1];N1<-N[2];
                             varz0<-all.vars(fl)[-1];vrze<-varz0[-which(varz0%in%c(gnma,gnch))]
                             outc=as.character(attr(terms.formula(fl),"variables")[[2]]) 
                             fit<-glm(fl,data=tab1,family=binomial)
